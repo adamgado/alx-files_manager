@@ -14,9 +14,9 @@ class AppController {
 
   static async getStats(request, response) {
     try {
-      const usr = await dbClient.nbUsers();
-      const fl = await dbClient.nbFiles();
-      response.status(200).send({ usr, fl });
+      const users = await dbClient.nbUsers();
+      const files = await dbClient.nbFiles();
+      response.status(200).send({ users, files });
     } catch (error) {
       console.log(error);
     }
