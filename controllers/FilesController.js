@@ -104,7 +104,6 @@ class FilesController {
       if (!req.user || !req.user.userId) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-
       const { userId } = req.user;
 
       const files = await dbClient.db.collection('files').aggregate([
@@ -128,13 +127,11 @@ class FilesController {
       if (!userId) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-
       const file = await dbClient.db.collection('files').findOne({ _id: ObjectId(id), userId: ObjectId(userId) });
 
       if (!file) {
         return res.status(404).json({ error: 'Not found' });
       }
-
       await dbClient.db.collection('files').updateOne({ _id: ObjectId(id) }, { $set: { isPublic: true } });
 
       return res.status(200).json(file);
@@ -152,13 +149,11 @@ class FilesController {
       if (!userId) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-
       const file = await dbClient.db.collection('files').findOne({ _id: ObjectId(id), userId: ObjectId(userId) });
 
       if (!file) {
         return res.status(404).json({ error: 'Not found' });
       }
-
       await dbClient.db.collection('files').updateOne({ _id: ObjectId(id) }, { $set: { isPublic: false } });
 
       return res.status(200).json(file);
@@ -171,37 +166,27 @@ class FilesController {
   static async getFile(req, res) {
     try {
       const { id } = req.params;
-
       if (!req.user || !req.user.userId) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-
       const { userId } = req.user;
-
       const file = await dbClient.db.collection('files').findOne({ _id: ObjectId(id) });
 
       if (!file) {
         return res.status(404).json({ error: 'Not found' });
       }
-
       if (!file.isPublic && file.userId !== userId) {
         return res.status(404).json({ error: 'Not found' });
       }
-
       if (file.type === 'folder') {
         return res.status(400).json({ error: "A folder doesn't have content" });
       }
-
       if (!fs.existsSync(file.localPath)) {
         return res.status(404).json({ error: 'Not found' });
       }
-
       const mimeType = mime.getType(file.name);
-
       const fileContent = fs.readFileSync(file.localPath);
-
       res.setHeader('Content-Type', mimeType);
-
       return res.send(fileContent);
     } catch (error) {
       console.error(error);
