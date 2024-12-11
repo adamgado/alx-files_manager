@@ -13,27 +13,19 @@ class DBClient {
       this.db = client.db(database);
       this.db.createCollection('users');
       this.db.createCollection('files');
-    });
-  }
+    });}
 
-  isAlive() {
-    return !!this.db;
-  }
+  isAlive() {return !!this.db;}
 
-  async nbUsers() {
-    return this.db.collection('users').countDocuments();
-  }
+  async nbUsers() {return this.db.collection('users').countDocuments();}
 
   async getUser(query) {
     console.log('QUERY IN DB.JS', query);
     const user = await this.db.collection('users').findOne(query);
     console.log('GET USER IN DB.JS', user);
-    return user;
-  }
+    return user;}
 
-  async nbFiles() {
-    return this.db.collection('files').countDocuments();
-  }
+  async nbFiles() {return this.db.collection('files').countDocuments();}
 }
 
 const dbClient = new DBClient();
